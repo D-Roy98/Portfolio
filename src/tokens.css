@@ -1,0 +1,76 @@
+/* Colour system: cool neutrals + two hues. Cyan is the primary brand and
+   action colour; green is the supporting colour (status, tags, "current").
+   The semantic aliases below (--bg, --text, --accent, --green) are what the
+   rest of the CSS uses, so re-theming only ever touches this block.
+   The site is dark-only, so there is no light-mode cascade to maintain. */
+:root {
+  /* Neutrals */
+  --neutral-950: #060910;
+  --neutral-900: #0b111c;
+  --neutral-800: #141c2b;
+  --neutral-700: #232e42;
+  --neutral-50: #f5f8fc;
+
+  /* The page runs from a deep navy at the top (behind the Matrix rain) down to
+     near-black at the bottom, so text reads brighter the further you scroll. */
+  --bg-top: #070c18;
+  --bg-bottom: #03050a;
+
+  /* Cyan — primary: interactive, navigation, focus */
+  --cyan-400: #5cd6f0;
+
+  /* Green — secondary: labels, tags, status */
+  --green-300: #7be8b8;
+  --green-400: #3ddc97;
+
+  /* Semantic aliases */
+  --bg: var(--neutral-950);
+  --surface: var(--neutral-900);
+  --text: var(--neutral-50);
+  --accent: var(--cyan-400);
+  --green: var(--green-400);
+
+  /* Derived text/line tones. Faint is 60%; it was 36%,
+     which failed WCAG AA for small text. */
+  --muted: color-mix(in srgb, var(--text) 78%, transparent);
+  --faint: color-mix(in srgb, var(--text) 60%, transparent);
+  --line: color-mix(in srgb, var(--text) 13%, transparent);
+
+  --font-heading: "Syne", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-ui: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "SF Mono", "Fira Code", "JetBrains Mono", ui-monospace, monospace;
+
+  /* One weighted, organic curve for every movement on the site. */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --gutter: clamp(20px, 5vw, 72px);
+  --maxw: 1240px;
+
+  /* Every project thumbnail on the site shares these. */
+  --thumb-ratio: 16 / 10;
+  --thumb-radius: 10px;
+  --section-y: clamp(56px, 8vw, 112px);
+
+  /* One rhythm for every card, grid and block on the page. */
+  --gap: 20px;
+  --card-pad: clamp(22px, 2.4vw, 32px);
+  --card-pad-lg: clamp(28px, 4vw, 48px);
+  --card-gap: 14px;
+  --card-radius: 14px;
+  --block-gap: 48px;
+}
+
+/* Ultra-wide monitors: let the content column grow so it doesn't float in a
+   sea of empty space. */
+@media (min-width: 1920px) {
+  :root {
+    --maxw: 1480px;
+  }
+}
+
+@media (min-width: 2400px) {
+  :root {
+    --maxw: 1720px;
+  }
+}

@@ -1,0 +1,609 @@
+.pet {
+  position: fixed;
+  right: var(--gutter);
+  bottom: 20px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  font-family: var(--font-ui);
+}
+
+/* The creature */
+.pet-btn {
+  --mx: 0px;
+  --my: 0px;
+  position: relative;
+  display: block;
+  width: 68px;
+  height: 68px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--neutral-900);
+  box-shadow: 0 14px 32px -16px rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+  animation: pet-bob 4.2s ease-in-out infinite;
+  transition: transform 0.6s var(--ease), border-color 0.5s var(--ease), box-shadow 0.6s var(--ease);
+}
+
+.pet-btn::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  opacity: 0;
+  animation: pet-ring 2.8s var(--ease) infinite;
+  pointer-events: none;
+}
+
+.pet-btn.is-open::before {
+  animation: none;
+}
+
+@keyframes pet-ring {
+  0% { opacity: 0.6; transform: scale(1); }
+  70%, 100% { opacity: 0; transform: scale(1.5); }
+}
+
+.pet-btn:hover,
+.pet-btn.is-open {
+  transform: translate(var(--mx), calc(var(--my) - 3px)) scale(1.06);
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--accent) 12%, transparent),
+    0 18px 36px -16px color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+.pet-status {
+  position: absolute;
+  right: 4px;
+  bottom: 6px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--green);
+  border: 2px solid var(--neutral-900);
+}
+
+/* Call to action above the pet */
+.pet-cta-bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  border-radius: 999px;
+  background: var(--neutral-900);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  animation: pet-cta-bounce 3.4s var(--ease) 3s infinite;
+  transition: border-color 0.5s var(--ease), box-shadow 0.6s var(--ease), background 0.5s var(--ease);
+}
+
+.pet-cta-bubble:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 0 28px color-mix(in srgb, var(--accent) 55%, transparent);
+  animation-play-state: paused;
+}
+
+.pet-cta-bubble:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@keyframes pet-cta-bounce {
+  0%,
+  22%,
+  100% {
+    translate: 0 0;
+  }
+  8% {
+    translate: 0 -6px;
+  }
+  15% {
+    translate: 0 0;
+  }
+}
+
+.pet-btn:active {
+  transform: scale(0.94);
+  transition-duration: 0.15s;
+}
+
+.pet-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+@keyframes pet-bob {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -3px;
+  }
+}
+
+.pet-svg {
+  --ex: 0;
+  --ey: 0;
+  --rx: 0deg;
+  --ry: 0deg;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: perspective(160px) rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 0.35s var(--ease);
+}
+
+/* Hover shockwave: three rings expand from the centre, staggered. */
+.pet-shock {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 35%, transparent), transparent 68%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pet-btn:hover .pet-shock {
+  animation: pet-shock 1.3s cubic-bezier(0.1, 0.6, 0.3, 1) infinite;
+}
+
+.pet-btn:hover .pet-shock--2 {
+  animation-delay: 0.22s;
+}
+
+.pet-btn:hover .pet-shock--3 {
+  animation-delay: 0.44s;
+}
+
+@keyframes pet-shock {
+  0% {
+    opacity: 0.85;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.7);
+  }
+}
+
+.dog-shadow {
+  fill: rgba(0, 0, 0, 0.4);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: dog-shadow 4.2s ease-in-out infinite;
+}
+
+@keyframes dog-shadow {
+  0%,
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scaleX(0.9);
+    opacity: 0.8;
+  }
+}
+
+.pet-svg {
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.45));
+}
+
+/* Floppy ears sway on a slow loop and flap faster once the chat is open. */
+.pet-ear {
+  --dir: 1;
+  transform-box: fill-box;
+  transform-origin: 50% 8%;
+  animation: pet-ear 4.6s ease-in-out infinite;
+}
+
+.pet-ear--l {
+  --dir: -1;
+}
+
+.pet-ear--r {
+  animation-delay: 0.5s;
+}
+
+.pet-btn.is-open .pet-ear {
+  animation-duration: 0.8s;
+}
+
+@keyframes pet-ear {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(calc(var(--dir) * 5deg));
+  }
+}
+
+/* The muzzle and ears shift against the head so it reads as a volume. */
+.pet-muzzle {
+  transform: translate(calc(var(--ex) * 0.35px), calc(var(--ey) * 0.3px));
+  transition: transform 0.25s var(--ease);
+}
+
+.pet-eyes {
+  transform: translate(calc(var(--ex) * 0.8px), calc(var(--ey) * 0.8px));
+  transition: transform 0.25s var(--ease);
+}
+
+.pet-eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pet-blink 5.5s infinite;
+}
+
+@keyframes pet-blink {
+  0%,
+  94%,
+  100% {
+    transform: scaleY(1);
+  }
+  97% {
+    transform: scaleY(0.08);
+  }
+}
+
+/* Panel */
+.pet-panel {
+  position: absolute;
+  right: 0;
+  bottom: 82px;
+  width: min(380px, calc(100vw - 2 * var(--gutter)));
+  height: min(76vh, 600px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(180deg, var(--neutral-800), var(--neutral-900)) padding-box,
+    linear-gradient(160deg, color-mix(in srgb, var(--accent) 45%, transparent), transparent 45%, color-mix(in srgb, var(--green) 25%, transparent)) border-box;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 40px 80px -30px rgba(0, 0, 0, 0.85),
+    0 0 60px -30px color-mix(in srgb, var(--accent) 50%, transparent);
+  transform-origin: bottom right;
+}
+
+.pet-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pet-avatar {
+  display: block;
+  width: 54px;
+  height: 54px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  border-radius: 50%;
+  background: var(--neutral-900);
+  cursor: pointer;
+  transition: transform 0.5s var(--ease), border-color 0.5s var(--ease), box-shadow 0.5s var(--ease);
+}
+
+.pet-avatar:hover {
+  transform: scale(1.06);
+  border-color: var(--accent);
+  box-shadow: 0 0 22px -6px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+.pet-avatar:active {
+  transform: scale(0.95);
+  transition-duration: 0.12s;
+}
+
+.pet-avatar:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.pet-morph {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.pet-id {
+  flex: 1;
+  min-width: 0;
+}
+
+.pet-name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pet-online {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--faint);
+}
+
+.pet-online span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+}
+
+.pet-close {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: none;
+  color: var(--faint);
+  cursor: pointer;
+  transition: color 0.4s var(--ease), background 0.4s var(--ease), border-color 0.4s var(--ease), transform 0.6s var(--ease);
+}
+
+.pet-close:hover {
+  color: var(--bg);
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: rotate(90deg);
+}
+
+/* Thread */
+.pet-thread {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 4px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+.pet-msg {
+  font-family: var(--font-body);
+  max-width: 88%;
+  padding: 11px 14px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.pet-msg--user {
+  align-self: flex-end;
+  border-bottom-right-radius: 5px;
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.pet-msg--pet {
+  align-self: flex-start;
+  border-bottom-left-radius: 5px;
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+  border: 1px solid var(--line);
+}
+
+.pet-lines {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.pet-lines li {
+  position: relative;
+  padding-left: 14px;
+}
+
+.pet-lines li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+}
+
+.pet-cta {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--bg);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.pet-cta:focus-visible,
+.pet-chip:focus-visible,
+.pet-close:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Thinking: a shimmering track with a travelling wave */
+.pet-wave {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 92px;
+  height: 20px;
+  padding: 0 10px;
+  overflow: hidden;
+  border-radius: 999px;
+}
+
+.pet-wave::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 20%, color-mix(in srgb, var(--accent) 35%, transparent) 50%, color-mix(in srgb, var(--green) 25%, transparent) 60%, transparent 80%);
+  background-size: 200% 100%;
+  animation: pet-shimmer 1.4s linear infinite;
+}
+
+.pet-wave i {
+  position: relative;
+  flex: 1;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--accent);
+  transform-origin: center;
+  animation: pet-bar 1.1s var(--ease) infinite;
+}
+
+.pet-wave i:nth-child(2) { animation-delay: 0.1s; }
+.pet-wave i:nth-child(3) { animation-delay: 0.2s; }
+.pet-wave i:nth-child(4) { animation-delay: 0.3s; }
+.pet-wave i:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes pet-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -100% 0; }
+}
+
+@keyframes pet-bar {
+  0%, 100% { transform: scaleY(0.25); opacity: 0.5; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+/* Chips */
+.pet-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.pet-chip {
+  --mx: 0px;
+  --my: 0px;
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 14.5px;
+  cursor: pointer;
+  transform: translate(var(--mx), var(--my));
+  transition:
+    transform 0.45s var(--ease),
+    color 0.4s var(--ease),
+    border-color 0.4s var(--ease),
+    background 0.4s var(--ease);
+}
+
+.pet-chip:hover:not(:disabled) {
+  transform: translate(var(--mx), var(--my)) scale(1.05);
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.pet-chip:active:not(:disabled) {
+  transform: translate(var(--mx), var(--my)) scale(0.96);
+  transition-duration: 0.12s;
+}
+
+.pet-chip:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+@media (max-width: 640px) {
+  .pet-btn {
+    width: 58px;
+    height: 58px;
+    padding: 6px;
+  }
+
+  .pet-panel {
+    bottom: 72px;
+    height: min(72vh, 560px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pet-btn,
+  .pet-shock,
+  .pet-ear,
+  .dog-shadow,
+  .pet-eye,
+  .pet-wave::before,
+  .pet-wave i,
+  .pet-btn::before,
+  .pet-cta-bubble {
+    animation: none;
+  }
+
+  .pet-btn,
+  .pet-chip,
+  .pet-svg {
+    transform: none;
+    transition: none;
+  }
+
+  .pet-btn:hover .pet-shock {
+    animation: none;
+  }
+
+  .pet-eyes {
+    transition: none;
+  }
+}
+
+@media (pointer: coarse) {
+  .pet-cta-bubble {
+    min-height: 44px;
+  }
+
+  .pet-chip {
+    min-height: 40px;
+  }
+
+  .pet-close {
+    width: 44px;
+    height: 44px;
+  }
+
+}
+
+/* On narrow screens the hint would sit on top of page content. */
+@media (max-width: 560px) {
+  .pet-cta-bubble {
+    display: none;
+  }
+}

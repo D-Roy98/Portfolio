@@ -1,0 +1,126 @@
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 45%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 70%),
+    var(--bg);
+  padding: var(--gutter);
+}
+
+/* A dot with two soft rings rippling outward on a loop. */
+.loading-pulse {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-pulse-dot {
+  position: relative;
+  z-index: 1;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.loading-pulse-ring {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  animation: pulse-ring 2.4s var(--ease) infinite;
+}
+
+.loading-pulse-ring--b {
+  animation-delay: 1.2s;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(4.2);
+    opacity: 0;
+  }
+}
+
+.loading-quote-wrap {
+  display: grid;
+  place-items: center;
+  min-height: 190px;
+  width: min(760px, 100%);
+}
+
+.loading-quote {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  text-align: center;
+}
+
+.loading-quote blockquote {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(24px, 4.2vw, 44px);
+  font-weight: 300;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-wrap: balance;
+}
+
+.loading-caption {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: clamp(13px, 1.6vw, 16px);
+  color: var(--muted);
+  text-wrap: balance;
+}
+
+.loading-skip {
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: none;
+  color: var(--faint);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.4s var(--ease), border-color 0.4s var(--ease);
+}
+
+.loading-skip:hover {
+  color: var(--text);
+  border-color: var(--faint);
+}
+
+.loading-skip:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-pulse-ring {
+    animation: none;
+    opacity: 0.25;
+  }
+}

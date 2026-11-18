@@ -1,0 +1,369 @@
+/* Experience timeline — a rail that draws itself as you scroll, with
+   focusable role cards. Motion is transform/opacity only; the whole thing
+   falls back to a static layout under prefers-reduced-motion. */
+.xp {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.xp-rail {
+  position: absolute;
+  left: 7px;
+  top: 28px;
+  bottom: 28px;
+  width: 2px;
+  background: var(--line);
+}
+
+.xp-fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: top;
+  background: linear-gradient(to bottom, var(--accent), var(--green));
+  box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 55%, transparent);
+  will-change: transform;
+}
+
+.xp-item {
+  position: relative;
+  padding: 0 0 22px 44px;
+}
+
+.xp-item:last-child {
+  padding-bottom: 0;
+}
+
+/* Node */
+.xp-node {
+  position: absolute;
+  left: 0;
+  top: 22px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--neutral-700);
+  background: var(--bg);
+  transition:
+    transform 0.8s var(--ease),
+    border-color 0.6s var(--ease),
+    background 0.6s var(--ease);
+}
+
+.xp-node::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  opacity: 0;
+  transform: scale(1);
+}
+
+.xp-item.is-lit .xp-node {
+  border-color: var(--accent);
+  background: var(--accent);
+  transform: scale(1.08);
+}
+
+.xp-item.is-lit .xp-node::after {
+  animation: xp-ping 1.4s var(--ease) 1;
+}
+
+@keyframes xp-ping {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+
+/* The current role is the the one green focal point, and it keeps pulsing. */
+.xp-item.is-current .xp-node {
+  border-color: var(--green);
+}
+
+.xp-item.is-current.is-lit .xp-node {
+  background: var(--green);
+}
+
+.xp-item.is-current .xp-node::after {
+  border-color: var(--green);
+  opacity: 0.7;
+  animation: xp-beacon 2.8s var(--ease) infinite;
+}
+
+@keyframes xp-beacon {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  80%,
+  100% {
+    opacity: 0;
+    transform: scale(2.8);
+  }
+}
+
+/* Company container */
+.xp-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px 24px 8px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background:
+    linear-gradient(160deg, color-mix(in srgb, var(--text) 4%, transparent), transparent 60%),
+    color-mix(in srgb, var(--surface) 80%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--text) 6%, transparent);
+  transition: border-color 0.6s var(--ease);
+}
+
+.xp-item.is-lit .xp-group {
+  border-color: color-mix(in srgb, var(--accent) 22%, var(--line));
+}
+
+.xp-group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.xp-group-brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  color: var(--text);
+}
+
+.xp-tenure {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text) 7%, transparent);
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* Roles inside the container */
+.xp-roles {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A short rail that brightens toward the newest role (top). */
+.xp-roles::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 14px;
+  bottom: 14px;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(to top, var(--line), color-mix(in srgb, var(--accent) 70%, transparent));
+}
+
+.xp-role {
+  position: relative;
+  padding: 0 0 6px 34px;
+}
+
+.xp-role-node {
+  position: absolute;
+  left: calc(8px - (7px + var(--grow, 0.5) * 5px));
+  top: calc(20px - (7px + var(--grow, 0.5) * 5px) + 8px);
+  width: calc(14px + var(--grow, 0.5) * 10px);
+  height: calc(14px + var(--grow, 0.5) * 10px);
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--accent) 60%, var(--neutral-700));
+  background: var(--bg);
+  transition: background 0.6s var(--ease), border-color 0.6s var(--ease);
+}
+
+.xp-role.is-current .xp-role-node {
+  border-color: var(--green);
+  background: var(--green);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--green) 18%, transparent);
+}
+
+.xp-role-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: none;
+  color: var(--text);
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.5s var(--ease), border-color 0.5s var(--ease);
+}
+
+.xp-role-btn:hover,
+.xp-role.is-open .xp-role-btn {
+  background: color-mix(in srgb, var(--text) 5%, transparent);
+  border-color: var(--line);
+}
+
+.xp-role-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.xp-role-btn:active {
+  transform: scale(0.995);
+}
+
+.xp-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.xp-period {
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--text) 7%, transparent);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.xp-now {
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--green) 16%, transparent);
+  color: var(--green);
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.xp-chevron {
+  margin-left: auto;
+  color: var(--faint);
+  transition: transform 0.7s var(--ease), color 0.5s var(--ease);
+}
+
+.xp-role-btn:hover .xp-chevron {
+  color: var(--text);
+}
+
+.xp-role.is-open .xp-chevron {
+  transform: rotate(180deg);
+}
+
+.xp-title {
+  font-family: var(--font-heading);
+  font-size: clamp(20px, 2.1vw, 28px);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+
+.xp-company {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 6px 18px;
+  min-height: 18px;
+  color: var(--muted);
+}
+
+.company-logo {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  max-height: 26px;
+  transition: color 0.6s var(--ease);
+}
+
+.company-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.company-lockup .company-logo {
+  max-height: none;
+}
+
+.xp-role-btn:hover .xp-company,
+.xp-role.is-open .xp-company {
+  color: var(--accent);
+}
+
+/* Details */
+.xp-detail {
+  margin: 0;
+  overflow: hidden;
+}
+
+.xp-detail-inner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px 28px;
+  padding: 6px 16px 14px;
+}
+
+.xp-detail dt {
+  margin-bottom: 3px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.xp-detail dd {
+  margin: 0;
+  font-size: 15px;
+}
+
+@media (min-width: 640px) {
+  .xp-detail-inner {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .xp-group {
+    padding: 18px 14px 6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-group,
+  .xp-role-btn,
+  .xp-role-node,
+  .xp-chevron,
+  .xp-node {
+    transition: none;
+  }
+
+  .xp-node::after,
+  .xp-item.is-lit .xp-node::after,
+  .xp-item.is-current .xp-node::after {
+    animation: none;
+  }
+
+  .xp-item.is-current .xp-node::after {
+    opacity: 0.5;
+  }
+}

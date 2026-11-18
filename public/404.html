@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <title>Page not found — Diganta Roy</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        background: radial-gradient(ellipse at center, #0a0e0a 0%, #020402 70%, #000 100%);
+        color: #f2e9d8;
+        font-family: "Space Mono", monospace;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 24px;
+      }
+
+      .wrap {
+        max-width: 520px;
+      }
+
+      .code {
+        font-family: "DotGothic16", sans-serif;
+        font-size: clamp(72px, 18vw, 148px);
+        line-height: 1;
+        color: #f7ead6;
+        text-shadow: 0 0 32px rgba(255, 150, 60, 0.35);
+        letter-spacing: 0.02em;
+      }
+
+      .message {
+        margin-top: 18px;
+        font-size: 16px;
+        color: #e8d3ba;
+        opacity: 0.85;
+      }
+
+      .home-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 32px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        color: #f2ede4;
+        text-decoration: none;
+        font-size: 14.5px;
+        font-weight: 600;
+        padding: 10px 20px;
+        transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+      }
+
+      .home-link:hover {
+        background: rgba(255, 179, 71, 0.14);
+        border-color: rgba(255, 179, 71, 0.5);
+        transform: translateY(-1px);
+      }
+
+      .home-link-arrow {
+        color: #ffb347;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="code">404</div>
+      <p class="message">This page doesn't exist — the link may be broken, or the page has moved.</p>
+      <a class="home-link" href="/">
+        Back to the portfolio <span class="home-link-arrow">→</span>
+      </a>
+    </div>
+  </body>
+</html>

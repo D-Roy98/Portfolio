@@ -1,0 +1,84 @@
+@import "./tokens.css";
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  /* clip, not hidden: hidden forces the other overflow axis to compute as
+     auto too (per the CSS overflow spec), turning body into a competing
+     scroll container that breaks position:sticky on children — clip avoids
+     that while still preventing horizontal overflow. */
+  overflow-x: clip;
+}
+
+/* Light-to-dark across the whole page length. */
+body {
+  background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg) 38%, var(--bg-bottom) 100%);
+}
+
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Live sparkle emoji: scale, tilt and glow on a slow loop. */
+.live-emoji {
+  display: inline-block;
+  animation: liveSparkle 3s infinite ease-in-out;
+}
+
+@keyframes liveSparkle {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.4));
+  }
+  50% {
+    transform: scale(1.2) rotate(12deg);
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.7));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-emoji {
+    animation: none;
+  }
+}
+
+/* Parallax targets (see src/lib/parallax.ts). `translate` and `scale` are the
+   independent transform properties, so they never clash with hover or
+   Framer Motion transforms. */
+[data-parallax] {
+  translate: 0 var(--p, 0px);
+  will-change: translate;
+}
+
+[data-parallax-fit] {
+  scale: 1.18;
+}
