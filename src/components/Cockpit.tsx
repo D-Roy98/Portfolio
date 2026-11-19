@@ -14,17 +14,26 @@ import { Marquee, WhatIDo, HowIWork, TechStack } from "./Showcase";
 import { heroPointer, heroLeaving } from "../lib/heroInteraction";
 import "./Cockpit.css";
 
-type SectionId = "HERO" | "PROJECTS" | "ABOUT" | "PROCESS" | "WHAT" | "EXPERIENCE" | "ARCHIVES" | "TOOLS" | "CONTACT";
+type SectionId = "HERO" | "PROJECTS" | "ABOUT" | "ARCHIVES" | "CONTACT";
 
 // Same order as the page itself, so the nav reads left-to-right the way the
 // page scrolls top-to-bottom.
 const NAV_ITEMS: { id: SectionId; label: string }[] = [
   { id: "PROJECTS", label: "Work" },
   { id: "ABOUT", label: "About" },
-  { id: "ARCHIVES", label: "Other work" },
-  { id: "TOOLS", label: "Tools & skills" },
-  { id: "EXPERIENCE", label: "Experience" },
+  { id: "ARCHIVES", label: "Explorations" },
 ];
+
+// Everything about the person lives in About; this is its in-section nav.
+const ABOUT_BLOCKS = [
+  { id: "about-overview", label: "Overview" },
+  { id: "about-experience", label: "Experience" },
+  { id: "about-skills", label: "Skills" },
+  { id: "about-tools", label: "Tools" },
+  { id: "about-certifications", label: "Certifications" },
+  { id: "about-process", label: "How I work" },
+  { id: "about-services", label: "What I do" },
+] as const;
 
 const FUN_FACT_ICONS = { guitar: Guitar, headphones: Headphones, waves: Waves };
 
@@ -129,7 +138,7 @@ function HeroWordCycle() {
   );
 }
 
-// "Other work" — the first tile spans the width, the rest sit two across. Every
+// "Explorations" — the first tile spans the width, the rest sit two across. Every
 // thumbnail is the Notion gallery cover at one shared ratio.
 type Archive = (typeof archives)[number];
 type TileSize = "feature" | "medium";
@@ -223,11 +232,62 @@ function Section({
         variants={rowRise}
         initial="hidden"
         whileInView="show"
-        viewport={{ once: true, amount: 0.12 }}
+        // "some", not a ratio: a tall body (About) can never show 12% of itself on a phone.
+        viewport={{ once: true, amount: "some" }}
       >
         {children}
       </motion.div>
     </div>
+  );
+}
+
+// Jump list under the About title. It highlights the block nearest the top of
+// the viewport and scrolls to a block on click (instantly when motion is reduced).
+function AboutNav() {
+  const reduced = useReducedMotion() ?? false;
+  const [active, setActive] = useState<string>(ABOUT_BLOCKS[0].id);
+
+  useEffect(() => {
+    const els = ABOUT_BLOCKS.map((b) => document.getElementById(b.id)).filter((el): el is HTMLElement => !!el);
+    const io = new IntersectionObserver(
+      (entries) => {
+        const hit = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (hit) setActive(hit.target.id);
+      },
+      { rootMargin: "-25% 0px -65% 0px" }
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <nav className="about-nav" aria-label="About sections">
+      <ul>
+        {ABOUT_BLOCKS.map((b) => (
+          <li key={b.id}>
+            <button
+              type="button"
+              className={`about-nav-link${active === b.id ? " is-active" : ""}`}
+              aria-current={active === b.id ? "true" : undefined}
+              onClick={() => document.getElementById(b.id)?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" })}
+            >
+              {b.label}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
+
+function AboutBlock({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
+  return (
+    <section id={id} className="about-block" aria-labelledby={`${id}-title`}>
+      <h3 id={`${id}-title`} className="about-block-title">
+        {title}
+      </h3>
+      {children}
+    </section>
   );
 }
 
@@ -338,20 +398,20 @@ export default function Cockpit() {
     window.setTimeout(() => navigate(path), 340);
   }
 
-  // Highlights the section most in view.
+  // Highlights the section that crosses a line 40% down the viewport. A visible-
+  // ratio threshold can't work here: About is several screens tall, so it never
+  // shows 25% of itself at once.
   useEffect(() => {
     const entries = Object.entries(sectionRefs.current) as [SectionId, HTMLElement | null][];
     const observer = new IntersectionObserver(
       (observed) => {
-        const visible = observed
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        const visible = observed.find((e) => e.isIntersecting);
         if (visible) {
           const id = entries.find(([, el]) => el === visible.target)?.[0];
           if (id) setActiveSection(id);
         }
       },
-      { threshold: [0.25, 0.5, 0.75] }
+      { rootMargin: "-40% 0px -59% 0px" }
     );
     entries.forEach(([, el]) => el && observer.observe(el));
     return () => observer.disconnect();
@@ -510,7 +570,8 @@ export default function Cockpit() {
         </section>
 
         <section className="section" ref={(el) => { sectionRefs.current.ABOUT = el; }}>
-          <Section title="About" index="02">
+          <Section title="About" index="02" intro={<AboutNav />}>
+            <div id="about-overview" className="about-block about-block--overview">
             <div className="about-id">
               <div className="about-photo">
                 <img src={pilotLog.photo} alt="Diganta Roy" data-parallax="0.1" data-parallax-fit />
@@ -556,69 +617,74 @@ export default function Cockpit() {
 
             <p className="about-bio">{pilotLog.bio}</p>
 
-            <h3 className="label label--block">How I work</h3>
-            <p className="how-lede">
-              <Highlighted text={processCopy.text} />
-            </p>
-            <HowIWork />
-
-            <h3 className="label label--block">What I do</h3>
-            <WhatIDo />
-
             <dl className="facts">
               <div className="facts-row">
                 <dt className="label">Based in</dt>
                 <dd>{pilotLog.base}</dd>
               </div>
             </dl>
+            </div>
 
+            <AboutBlock id="about-experience" title="Experience">
+              <ExperienceTimeline />
+            </AboutBlock>
+
+            <AboutBlock id="about-skills" title="Skills">
+              <div className="skills-grid">
+                {pilotLog.skills.map((s) => (
+                  <div className="skills-group" key={s.group}>
+                    <h4 className="skills-group-name">{s.group}</h4>
+                    <ul className="skills-chips">
+                      {s.items.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </AboutBlock>
+
+            <AboutBlock id="about-tools" title="Tools">
+              <TechStack />
+            </AboutBlock>
+
+            <AboutBlock id="about-certifications" title="Certifications">
+              <dl className="rows">
+                {certifications.map((c) => (
+                  <div className="rows-item" key={c.title}>
+                    <dt>{c.year}</dt>
+                    <dd>
+                      {c.title}
+                      {c.issuer && <span className="rows-issuer"> · {c.issuer}</span>}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </AboutBlock>
+
+            <AboutBlock id="about-process" title="How I work">
+              <p className="how-lede">
+                <Highlighted text={processCopy.text} />
+              </p>
+              <HowIWork />
+            </AboutBlock>
+
+            <AboutBlock id="about-services" title="What I do">
+              <WhatIDo />
+            </AboutBlock>
           </Section>
         </section>
 
         <Marquee />
 
 <section className="section" ref={(el) => { sectionRefs.current.ARCHIVES = el; }}>
-          <Section title="Other work" index="03">
+          {/* Route stays /other-work/:slug so links that already exist keep working. */}
+          <Section title="Explorations" index="03">
             <BentoGrid
               items={archives}
               openingTitle={opening?.startsWith("archive:") ? opening.slice(8) : null}
               onOpen={(title) => openProject(`archive:${title}`, `/other-work/${encodeURIComponent(title)}`)}
             />
-          </Section>
-        </section>
-
-<section className="section" ref={(el) => { sectionRefs.current.TOOLS = el; }}>
-          <Section title="Tools & skills" index="04">
-            <TechStack />
-
-            <h3 className="label label--block">Skills</h3>
-            <dl className="rows">
-              {pilotLog.skills.map((s) => (
-                <div className="rows-item" key={s.group}>
-                  <dt>{s.group}</dt>
-                  <dd>{s.items.join(" · ")}</dd>
-                </div>
-              ))}
-            </dl>
-
-            <h3 className="label label--block">Certifications</h3>
-            <dl className="rows">
-              {certifications.map((c) => (
-                <div className="rows-item" key={c.title}>
-                  <dt>{c.year}</dt>
-                  <dd>
-                    {c.title}
-                    {c.issuer && <span className="rows-issuer"> · {c.issuer}</span>}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </Section>
-        </section>
-
-        <section className="section" ref={(el) => { sectionRefs.current.EXPERIENCE = el; }}>
-          <Section title="Experience" index="05">
-            <ExperienceTimeline />
           </Section>
         </section>
 

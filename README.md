@@ -22,14 +22,14 @@ src/
   index.css             Global styles, .live-emoji
   App.tsx               Routes + ScrollManager + SitePet
   data/
-    content.ts          Bio, skills, experience, tools, testimonials, other work
+    content.ts          Bio, skills, experience, tools, testimonials, explorations (formerly "other work")
     projects.ts         Selected-work case studies
     pet.ts              Curated Q&A for the chatbot (built from the data above)
     quotes.ts           Loading-screen quotes
   components/
-    Cockpit.tsx         Home page (hero, work, about, other work, toolbox, contact)
+    Cockpit.tsx         Home page (hero, work, about with experience, skills and tools, explorations, contact)
     ProjectPage.tsx     /work/:slug
-    ArchivePage.tsx     /other-work/:slug
+    ArchivePage.tsx     /other-work/:slug (the "Explorations" case studies; path kept so old links work)
     ExperienceTimeline  Scroll-drawn experience timeline
     SitePet / PetMorph  Dog chatbot (Q&A chips) and its avatar morph
     LoadingScreen       Multilingual quotes intro

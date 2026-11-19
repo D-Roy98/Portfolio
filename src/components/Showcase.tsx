@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Presentation, Mail, LayoutGrid, Code, Wand, Heart, Layers, type LucideIcon } from "lucide-react";
+import { Presentation, Mail, LayoutGrid, Code, Wand, Heart, Layers, Sparkles, type LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ArrowUpRightIcon } from "./Icons";
 import { marqueeTerms, whatIDo, flightPlan, toolClusters } from "../data/content";
@@ -130,7 +130,7 @@ const STACK_ICONS: Record<string, { slug?: string; Icon?: LucideIcon }> = {
   Jira: { slug: "jira" },
   "Google Suite": { slug: "google" },
   Claude: { slug: "claude" },
-  GPT: { slug: "openai" },
+  GPT: { Icon: Sparkles }, // Simple Icons dropped the "openai" slug (404), so use a neutral line icon
   "Claude Code": { slug: "claude" },
   Replit: { slug: "replit" },
   GitHub: { slug: "github" },
