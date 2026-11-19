@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence, useReducedMotion, type Variants } from "framer-motion";
-import { Download, Guitar, Headphones, Mail, Waves } from "lucide-react";
+import { Compass, Download, Guitar, Headphones, Layers, Mail, Palette, Target, Waves, type LucideIcon } from "lucide-react";
 import { ArrowRightIcon, ArrowUpRightIcon } from "./Icons";
 import { projects } from "../data/projects";
 import { pilotLog, processCopy, archives, comms, certifications, heroWords } from "../data/content";
@@ -36,6 +36,14 @@ const ABOUT_BLOCKS = [
 ] as const;
 
 const FUN_FACT_ICONS = { guitar: Guitar, headphones: Headphones, waves: Waves };
+
+// Decorative icon per skill group; any new group falls back to Layers.
+const SKILL_ICONS: Record<string, LucideIcon> = {
+  UX: Compass,
+  "Visual Design": Palette,
+  Product: Target,
+  "UX artifacts": Layers,
+};
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -297,7 +305,7 @@ function ResumeButton() {
       <Download size={16} aria-hidden="true" />
       <span className="resume-swap">
         <span>Résumé</span>
-        <span aria-hidden="true">Download resume</span>
+        <span aria-hidden="true">Download</span>
       </span>
     </a>
   );
@@ -326,14 +334,8 @@ function ContactCard() {
   }
 
   return (
-    <motion.div
-      className="contact"
-      initial={{ opacity: 0, y: 36 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.9, ease: EASE }}
-    >
-      <h2 className="contact-title">Contact</h2>
+    <Section title="Contact" index="04">
+    <div className="contact">
       <ul className="contact-icons">
         <li>
           <a href={comms.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" data-cursor="open">
@@ -371,7 +373,8 @@ function ContactCard() {
         <button type="submit" className="btn btn--cta contact-submit">Submit</button>
         {sent && <p className="contact-note" role="status">Your email app should open with the message ready to send.</p>}
       </form>
-    </motion.div>
+    </div>
+    </Section>
   );
 }
 
@@ -630,18 +633,36 @@ export default function Cockpit() {
             </AboutBlock>
 
             <AboutBlock id="about-skills" title="Skills">
-              <div className="skills-grid">
-                {pilotLog.skills.map((s) => (
-                  <div className="skills-group" key={s.group}>
-                    <h4 className="skills-group-name">{s.group}</h4>
-                    <ul className="skills-chips">
-                      {s.items.map((item) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
+              <ul className="skills-grid">
+                {pilotLog.skills.map((s, i) => {
+                  const Icon = SKILL_ICONS[s.group] ?? Layers;
+                  return (
+                    <motion.li
+                      className="skills-card"
+                      key={s.group}
+                      initial={{ opacity: 0, y: 24 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: "some" }}
+                      transition={{ duration: 0.7, ease: EASE, delay: (i % 2) * 0.08 }}
+                    >
+                      <header className="skills-card-head">
+                        <span className="skills-mark" aria-hidden="true">
+                          <Icon size={20} strokeWidth={1.5} />
+                        </span>
+                        <h4 className="skills-group-name">{s.group}</h4>
+                        <span className="skills-count" aria-label={`${s.items.length} skills`}>
+                          {String(s.items.length).padStart(2, "0")}
+                        </span>
+                      </header>
+                      <ul className="skills-list">
+                        {s.items.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </motion.li>
+                  );
+                })}
+              </ul>
             </AboutBlock>
 
             <AboutBlock id="about-tools" title="Tools">

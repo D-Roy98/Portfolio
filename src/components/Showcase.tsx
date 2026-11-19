@@ -188,8 +188,10 @@ export function TechStack() {
           <ul className="stack-chips">
             {c.items.map((t) => (
               <li key={t.name}>
-                <ToolIcon name={t.name} />
-                {t.name}
+                <span className="tool-mark" aria-hidden="true">
+                  <ToolIcon name={t.name} />
+                </span>
+                <span className="tool-name">{t.name}</span>
               </li>
             ))}
           </ul>
