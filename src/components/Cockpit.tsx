@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence, useReducedMotion, type Variants } from "framer-motion";
 import { Compass, Download, Guitar, Headphones, Layers, Mail, Palette, Target, Waves, type LucideIcon } from "lucide-react";
-import { ArrowRightIcon, ArrowUpRightIcon } from "./Icons";
+import { ArrowUpRightIcon } from "./Icons";
 import { projects } from "../data/projects";
 import { pilotLog, processCopy, archives, comms, certifications, heroWords } from "../data/content";
 import MatrixRain from "./MatrixRain";
@@ -299,14 +299,26 @@ function AboutBlock({ id, title, children }: { id: string; title: string; childr
   );
 }
 
-function ResumeButton() {
+// The primary call to action. Compact in the header (label swaps to "Download"
+// on hover); full-size with a plain label in the hero.
+function ResumeButton({ compact = false }: { compact?: boolean }) {
   return (
-    <a className="btn btn--resume" href={comms.resume} download="Diganta_Roy_Resume.pdf" data-cursor="open" aria-label="Download resume">
+    <a
+      className={`btn btn--cta btn--resume${compact ? " btn--sm" : ""}`}
+      href={comms.resume}
+      download="Diganta_Roy_Resume.pdf"
+      data-cursor="open"
+      aria-label="Download resume"
+    >
       <Download size={16} aria-hidden="true" />
-      <span className="resume-swap">
-        <span>Résumé</span>
-        <span aria-hidden="true">Download</span>
-      </span>
+      {compact ? (
+        <span className="resume-swap">
+          <span>Résumé</span>
+          <span aria-hidden="true">Download</span>
+        </span>
+      ) : (
+        <span>Download résumé</span>
+      )}
     </a>
   );
 }
@@ -510,8 +522,8 @@ export default function Cockpit() {
           ))}
         </nav>
         <div className="header-actions">
-          <ResumeButton />
-          <button type="button" className="btn btn--cta" onClick={() => scrollToSection("CONTACT")}>
+          <ResumeButton compact />
+          <button type="button" className="btn btn--ghost btn--sm" onClick={() => scrollToSection("CONTACT")}>
             Contact
           </button>
         </div>
@@ -524,11 +536,12 @@ export default function Cockpit() {
               A product designer who obsesses over <HeroWordCycle />
             </motion.h1>
             <motion.p className="hero-sub" variants={rise}>
-              Crafting thoughtful digital experiences that simplify complex systems.
+              Product and UX designer at Valtech, Bengaluru, shaping connected mobility, in-vehicle HMI and enterprise dashboards.
             </motion.p>
-            <motion.div variants={rise}>
-              <button type="button" className="btn btn--ghost" onClick={() => scrollToSection("PROJECTS")}>
-                Selected work <ArrowRightIcon size={15} />
+            <motion.div className="hero-cta" variants={rise}>
+              <ResumeButton />
+              <button type="button" className="btn btn--ghost" onClick={() => scrollToSection("CONTACT")}>
+                Contact
               </button>
             </motion.div>
           </motion.div>
