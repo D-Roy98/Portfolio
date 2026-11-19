@@ -299,26 +299,21 @@ function AboutBlock({ id, title, children }: { id: string; title: string; childr
   );
 }
 
-// The primary call to action. Compact in the header (label swaps to "Download"
-// on hover); full-size with a plain label in the hero.
-function ResumeButton({ compact = false }: { compact?: boolean }) {
+// The primary call to action, in the header. Its label swaps to "Download" on hover.
+function ResumeButton() {
   return (
     <a
-      className={`btn btn--cta btn--resume${compact ? " btn--sm" : ""}`}
+      className="btn btn--cta btn--resume btn--sm"
       href={comms.resume}
       download="Diganta_Roy_Resume.pdf"
       data-cursor="open"
       aria-label="Download resume"
     >
       <Download size={16} aria-hidden="true" />
-      {compact ? (
-        <span className="resume-swap">
-          <span>Résumé</span>
-          <span aria-hidden="true">Download</span>
-        </span>
-      ) : (
-        <span>Download résumé</span>
-      )}
+      <span className="resume-swap">
+        <span>Résumé</span>
+        <span aria-hidden="true">Download</span>
+      </span>
     </a>
   );
 }
@@ -522,7 +517,7 @@ export default function Cockpit() {
           ))}
         </nav>
         <div className="header-actions">
-          <ResumeButton compact />
+          <ResumeButton />
           <button type="button" className="btn btn--ghost btn--sm" onClick={() => scrollToSection("CONTACT")}>
             Contact
           </button>
@@ -536,14 +531,8 @@ export default function Cockpit() {
               A product designer who obsesses over <HeroWordCycle />
             </motion.h1>
             <motion.p className="hero-sub" variants={rise}>
-              Product and UX designer at Valtech, Bengaluru, shaping connected mobility, in-vehicle HMI and enterprise dashboards.
+              Crafting thoughtful digital experiences that simplify complex systems.
             </motion.p>
-            <motion.div className="hero-cta" variants={rise}>
-              <ResumeButton />
-              <button type="button" className="btn btn--ghost" onClick={() => scrollToSection("CONTACT")}>
-                Contact
-              </button>
-            </motion.div>
           </motion.div>
         </section>
 
